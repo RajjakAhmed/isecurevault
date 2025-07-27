@@ -6,7 +6,9 @@ import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import fs from 'fs';
-import { scanFileForVirus } from './utils/virusScan';
+import { scanFile } from './utils/virusScan';
+
+
 
 import uploadRoutes from './routes/uploadRoutes';
 import { FileSecurity } from './utils/file';
@@ -141,7 +143,7 @@ app.post('/files/upload', upload.single('file'), async (req, res) => {
   if (!file) return res.status(400).json({ error: 'No file uploaded' });
 
   try {
-    const isClean = await scanFileForVirus(file.path);
+    const isClean = await scanFile(file.path);
     if (!isClean) {
       // Optionally delete the infected file here
       return res.status(400).json({ error: 'File contains malware' });
